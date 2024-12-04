@@ -28,7 +28,8 @@ export default function Home() {
       setChatHistory((prevHistory) => [
         ...prevHistory,
         { role: "user", parts: value },
-        { role: "bot", parts: data.text },
+        { role: "model", parts: data.text },
+      
       ]);
 
       setValue("");
@@ -83,7 +84,9 @@ export default function Home() {
           {chatHistory.map((chatItem, _index) => (
             <p
               key={_index}
-              className="py-2 px-3 w-fit max-w-[75%] bg-gray-700 text-white rounded-lg"
+              className={`py-2 px-3 w-fit max-w-[90%] text-white rounded-lg
+                ${chatItem.role === "user" ? "bg-black" : "bg-gray-700"}
+                `}
             >
               {chatItem.parts}
             </p>

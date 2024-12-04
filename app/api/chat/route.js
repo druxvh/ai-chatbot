@@ -1,7 +1,9 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+const model = genAI.getGenerativeModel({ 
+  model: "gemini-1.5-flash",
+});
 
 export async function POST(request) {
   try {
@@ -13,8 +15,12 @@ export async function POST(request) {
         status: 400,
       });
     }
+    const formattedHistory = history.map((item) => ({
+      role: item.role,
+      parts: [{ text: item.parts }],
+    }));
 
-    const chat = model.startChat([history]);
+    const chat = model.startChat({ history: formattedHistory });
     const result = await chat.sendMessage(prompt);
     const text = result.response.text();
 
