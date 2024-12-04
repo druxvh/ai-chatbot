@@ -7,6 +7,37 @@ export default function Home() {
   const [value, setValue] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
 
+  const getResponse = async () => {
+    if (!value) {
+      setError("Error, ask a question?");
+      return;
+    }
+    try {
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history: chatHistory, prompt: value }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Something went wrong with the API.");
+      }
+
+      const data = await response.json();
+
+      setChatHistory((prevHistory) => [
+        ...prevHistory,
+        { role: "user", parts: value },
+        { role: "bot", parts: data.text },
+      ]);
+
+      setValue("");
+    } catch (error) {
+      console.error(err);
+      setError("Something went wrong, please try again later.");
+    }
+  };
+
   const buttonStyle =
     "px-4 py-2 bg-black text-white text-[12px] text-nowrap font-sans font-semibold";
 
@@ -35,24 +66,28 @@ export default function Home() {
           />
 
           {!error ? (
-            <button className={`${buttonStyle}`}>Ask me</button>
+            <button className={`${buttonStyle}`} onClick={getResponse}>
+              Ask
+            </button>
           ) : (
             <button className={`${buttonStyle}`}>Clear</button>
           )}
 
-          {error && <p>{error}</p>}
+          {error && (
+            <p className="font-sans text-xs text-red-500 mt-4">{error}</p>
+          )}
         </div>
 
         {/* Search Results */}
         <div className="flex flex-col gap-2 h-full mt-10 relative">
-          <p className="py-2 px-3 w-fit max-w-[80%] bg-gray-700 text-white rounded-lg">
-            user: rfrnfr rfirfkrjbnfjkr frwjfrnhfkjrefk ikhbfc
-          </p>
-          <p className="py-2 px-3 w-fit max-w-[80%] bg-gray-700 text-white rounded-lg">
-            bot: rfrnfr rfirfkrjrnhfkjrefk nfr rfirfkrjrnhfkjrefk nfr
-            rfirfkrjrnhfkjrefk nfr rfirfkrjrnhfkjrefk nfr rfirfkrjrnhfkjrefk nfr
-            rfirfkrjrnhfkjrefk ikhbfc
-          </p>
+          {chatHistory.map((chatItem, _index) => (
+            <p
+              key={_index}
+              className="py-2 px-3 w-fit max-w-[75%] bg-gray-700 text-white rounded-lg"
+            >
+              {chatItem.parts}
+            </p>
+          ))}
         </div>
       </div>
     </main>
