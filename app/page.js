@@ -7,6 +7,7 @@ export default function Home() {
   const [value, setValue] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
 
+  // Fetch response
   const getResponse = async () => {
 
     // If no value
@@ -44,6 +45,12 @@ export default function Home() {
     }
   };
 
+  // Handles Clear functionality
+  const handleClear = (e) => {
+    e.preventDefault()
+    setChatHistory([])
+  }
+
   const buttonStyle =
     "bg-black text-white text-xs text-nowrap font-sans font-semibold hover:bg-gray-800 hover:text-white transition ease-in-out delay-100";
 
@@ -71,23 +78,27 @@ export default function Home() {
             }}
           />
 
-          {!error ? (
             <button 
             className={`${buttonStyle} px-4 py-3 rounded-r-lg`} 
             onClick={getResponse}>
               Ask
             </button>
-          ) : (
-            <button className={`${buttonStyle}`}>Clear</button>
-          )}
 
           {error && (
             <p className="font-sans text-xs text-red-500 mt-4">{error}</p>
           )}
         </div>
 
+        <div className="my-2.5 py-2 flex justify-end">
+          <button 
+          className="text-xs text-gray-800 font-sans font-medium tracking-wider underline"
+          onClick={handleClear}
+          >Clear</button>
+
+        </div>
+
         {/* Search Results */}
-        <div className="flex flex-col gap-3 h-full mt-9">
+        <div className="flex flex-col gap-3 h-full">
           {chatHistory.map((chatItem, _index) => (
             <div
               key={_index}
