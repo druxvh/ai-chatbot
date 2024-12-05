@@ -1,4 +1,5 @@
 import "./globals.css";
+import Footer from "./components/footer";
 
 export const metadata = {
   title: "AI Chatbot",
@@ -8,10 +9,9 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body
-        className={`bg-slate-100 antialiased`}
-      >
+      <body className="bg-slate-100 antialiased">
         {children}
+        <Footer />
       </body>
     </html>
   );

@@ -63,8 +63,8 @@ export default function Home() {
     "bg-black text-white text-xs text-nowrap font-sans font-semibold hover:bg-gray-800 hover:text-white transition ease-in-out delay-100";
 
   return (
-    <main className="max-w-2xl h-screen mx-auto">
-      <div className="px-2 h-full">
+    <main className="max-w-2xl h-full mx-auto">
+      <div className="px-2 pb-12 h-full">
         <p className="py-10 text-2xl font-mono font-semibold text-center">
           AI Chatbot
         </p>
