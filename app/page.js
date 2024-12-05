@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import surprisePrompts from "./surprisePrompts";
 
 export default function Home() {
   const [error, setError] = useState("");
@@ -9,14 +10,13 @@ export default function Home() {
 
   // Fetch response
   const getResponse = async () => {
-
     // If no value
     if (!value) {
       setError("Error, ask a question?");
       return;
     }
 
-    // Sends chathistory and prompt value wihin the body as the request 
+    // Sends chathistory and prompt value wihin the body as the request
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -29,7 +29,7 @@ export default function Home() {
       }
 
       const data = await response.json();
-      const text = data.text
+      const text = data.text;
 
       // keeps the chat history between the user and model
       setChatHistory((prevHistory) => [
@@ -47,9 +47,17 @@ export default function Home() {
 
   // Handles Clear functionality
   const handleClear = (e) => {
-    e.preventDefault()
-    setChatHistory([])
-  }
+    e.preventDefault();
+    setChatHistory([]);
+  };
+
+  // Handles SurpriseMe functionality
+  const handleSurpriseMe = () => {
+    // Random prompt logic
+    const randomPrompt =
+      surprisePrompts[Math.floor(Math.random() * surprisePrompts.length)];
+    setValue(randomPrompt);
+  };
 
   const buttonStyle =
     "bg-black text-white text-xs text-nowrap font-sans font-semibold hover:bg-gray-800 hover:text-white transition ease-in-out delay-100";
@@ -65,24 +73,30 @@ export default function Home() {
           <p className="text-base font-medium font-sans tracking-wide">
             What do you want to know?
           </p>
-          <button className={`${buttonStyle} px-4 py-2 rounded-lg`}>Surprise me</button>
+          <button
+            className={`${buttonStyle} px-4 py-2 rounded-lg`}
+            onClick={handleSurpriseMe}
+          >
+            Surprise me
+          </button>
         </div>
 
         <div className="flex mt-6 items-center gap-1">
           <input
             className="w-full px-2 py-3 font-sans text-sm tracking-wider outline-none rounded-l-lg"
             value={value}
-            placeholder="How to make a car's engine?"
+            placeholder="What's on your mind?"
             onChange={(e) => {
               setValue(e.target.value);
             }}
           />
 
-            <button 
-            className={`${buttonStyle} px-4 py-3 rounded-r-lg`} 
-            onClick={getResponse}>
-              Ask
-            </button>
+          <button
+            className={`${buttonStyle} px-4 py-3 rounded-r-lg`}
+            onClick={getResponse}
+          >
+            Ask
+          </button>
 
           {error && (
             <p className="font-sans text-xs text-red-500 mt-4">{error}</p>
@@ -90,11 +104,12 @@ export default function Home() {
         </div>
 
         <div className="my-2.5 py-2 flex justify-end">
-          <button 
-          className="text-xs text-gray-800 font-sans font-medium tracking-wider underline"
-          onClick={handleClear}
-          >Clear</button>
-
+          <button
+            className="text-xs text-gray-800 font-sans font-medium tracking-wider underline"
+            onClick={handleClear}
+          >
+            Clear
+          </button>
         </div>
 
         {/* Search Results */}
@@ -107,7 +122,7 @@ export default function Home() {
               }`}
             >
               <p
-                className={`py-2 px-3 w-fit max-w-[90%] text-sm text-white rounded-lg
+                className={`py-2 px-3 w-fit max-w-[90%] text-sm text-white font-sans rounded-lg
                 ${chatItem.role === "user" ? "bg-black" : "bg-gray-700"}
                 `}
               >
