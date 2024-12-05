@@ -8,10 +8,14 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState([]);
 
   const getResponse = async () => {
+
+    // If no value
     if (!value) {
       setError("Error, ask a question?");
       return;
     }
+
+    // Sends chathistory and prompt value wihin the body as the request 
     try {
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -24,12 +28,13 @@ export default function Home() {
       }
 
       const data = await response.json();
+      const text = data.text
 
+      // keeps the chat history between the user and model
       setChatHistory((prevHistory) => [
         ...prevHistory,
         { role: "user", parts: value },
-        { role: "model", parts: data.text },
-      
+        { role: "model", parts: text },
       ]);
 
       setValue("");
@@ -40,7 +45,7 @@ export default function Home() {
   };
 
   const buttonStyle =
-    "px-4 py-2 bg-black text-white text-[12px] text-nowrap font-sans font-semibold";
+    "bg-black text-white text-xs text-nowrap font-sans font-semibold hover:bg-gray-800 hover:text-white transition ease-in-out delay-100";
 
   return (
     <main className="max-w-2xl h-screen mx-auto">
@@ -53,12 +58,12 @@ export default function Home() {
           <p className="text-base font-medium font-sans tracking-wide">
             What do you want to know?
           </p>
-          <button className={`${buttonStyle} rounded-lg`}>Surprise me</button>
+          <button className={`${buttonStyle} px-4 py-2 rounded-lg`}>Surprise me</button>
         </div>
 
-        <div className="flex mt-8 items-center gap-1">
+        <div className="flex mt-6 items-center gap-1">
           <input
-            className="w-full p-2 font-sans text-sm tracking-wider outline-none "
+            className="w-full px-2 py-3 font-sans text-sm tracking-wider outline-none rounded-l-lg"
             value={value}
             placeholder="How to make a car's engine?"
             onChange={(e) => {
@@ -67,7 +72,9 @@ export default function Home() {
           />
 
           {!error ? (
-            <button className={`${buttonStyle}`} onClick={getResponse}>
+            <button 
+            className={`${buttonStyle} px-4 py-3 rounded-r-lg`} 
+            onClick={getResponse}>
               Ask
             </button>
           ) : (
@@ -80,16 +87,22 @@ export default function Home() {
         </div>
 
         {/* Search Results */}
-        <div className="flex flex-col gap-2 h-full mt-10 relative">
+        <div className="flex flex-col gap-3 h-full mt-9">
           {chatHistory.map((chatItem, _index) => (
-            <p
+            <div
               key={_index}
-              className={`py-2 px-3 w-fit max-w-[90%] text-white rounded-lg
+              className={`flex ${
+                chatItem.role === "user" ? "justify-end" : "justify-start"
+              }`}
+            >
+              <p
+                className={`py-2 px-3 w-fit max-w-[90%] text-sm text-white rounded-lg
                 ${chatItem.role === "user" ? "bg-black" : "bg-gray-700"}
                 `}
-            >
-              {chatItem.parts}
-            </p>
+              >
+                {chatItem.parts}
+              </p>
+            </div>
           ))}
         </div>
       </div>
