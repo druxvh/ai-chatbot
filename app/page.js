@@ -10,7 +10,6 @@ export default function Home() {
 
   // Fetch response
   const getResponse = async () => {
-    // If no value
     if (!value) {
       setError("Error, ask a question?");
       return;
@@ -97,10 +96,6 @@ export default function Home() {
           >
             Ask
           </button>
-
-          {error && (
-            <p className="font-sans text-xs text-red-500 mt-4">{error}</p>
-          )}
         </div>
 
         <div className="my-2.5 py-2 flex justify-end">
@@ -111,6 +106,13 @@ export default function Home() {
             Clear
           </button>
         </div>
+
+        {/* If error */}
+        {error && (
+          <p className="font-sans font-bold text-sm text-center text-red-500 mt-24">
+            {error}
+          </p>
+        )}
 
         {/* Search Results */}
         <div className="flex flex-col gap-3 h-full">
